@@ -57,66 +57,59 @@ typedef struct	s_triade {
 	bool	cell[3]; // true or false
 } t_triade;
 
+t_node	*append_reel(t_node *last_reel) {
+	// create chained list with A B C D E F
+	t_node	*new;
+	new = malloc (sizeof(t_node));
+	if (!new)
+		exit(MALLOC_ERR_NO);
+	new->data = malloc (sizeof(t_node));
+	if (!new->data)
+		exit(MALLOC_ERR_NO);
+	((t_node *)new->data)->data = malloc (sizeof(t_triade));
+	if (last_reel)
+		last_reel->next = new;
+	new->prev = last_reel;
+	new->next = NULL;
+	return new;
+}
+
 t_node *set_list() {
 	// create chained list with A B C D E F
 	t_node	*head;
 	t_node	*last;
-	t_node	*new;
-	head = malloc (sizeof(t_node));
+	head = append_reel(NULL);
 	((t_triade*)head->data)->cell[0] = true;
 	((t_triade*)head->data)->cell[1] = false;
 	((t_triade*)head->data)->cell[2] = false;
 	((t_triade*)head->data)->id = 'A';
-	last = malloc (sizeof(t_node));
-	if (!last)
-		exit(MALLOC_ERR_NO);
+	last = append_reel(head);
 	((t_triade*)last->data)->cell[0] = true;
 	((t_triade*)last->data)->cell[1] = true;
 	((t_triade*)last->data)->cell[2] = false;
 	((t_triade*)last->data)->id = 'B';
-	head->next = last;
-	last->prev = head;
-	new = malloc (sizeof(t_node));
-	if (!new)
-		exit(MALLOC_ERR_NO);
-	((t_triade*)new->data)->cell[0] = true;
-	((t_triade*)new->data)->cell[1] = false;
-	((t_triade*)new->data)->cell[2] = true;
-	((t_triade*)new->data)->id = 'C';
-	last->next = new;
-	new->prev = last;
-	last = new;
-	new = malloc (sizeof(t_node));
-	if (!new)
-		exit(MALLOC_ERR_NO);
-	((t_triade*)new->data)->cell[0] = false;
-	((t_triade*)new->data)->cell[1] = true;
-	((t_triade*)new->data)->cell[2] = true;
-	((t_triade*)new->data)->id = 'D';
-	last->next = new;
-	new->prev = last;
-	last = new;
-	new = malloc (sizeof(t_node));
-	if (!new)
-		exit(MALLOC_ERR_NO);
-	((t_triade*)new->data)->cell[0] = false;
-	((t_triade*)new->data)->cell[1] = false;
-	((t_triade*)new->data)->cell[2] = true;
-	((t_triade*)new->data)->id = 'E';
-	last->next = new;
-	new->prev = last;
-	last = new;
-	new = malloc (sizeof(t_node));
-	if (!new)
-		exit(MALLOC_ERR_NO);
-	((t_triade*)new->data)->cell[0] = false;
-	((t_triade*)new->data)->cell[1] = true;
-	((t_triade*)new->data)->cell[2] = false;
-	((t_triade*)new->data)->id = 'F';
-	last->next = new;
-	new-> next = head;
-	new->prev = last;
-	head->prev = new ;
+	last = append_reel(last);
+	((t_triade*)last->data)->cell[0] = true;
+	((t_triade*)last->data)->cell[1] = false;
+	((t_triade*)last->data)->cell[2] = true;
+	((t_triade*)last->data)->id = 'C';
+	last = append_reel(last);
+	((t_triade*)last->data)->cell[0] = false;
+	((t_triade*)last->data)->cell[1] = true;
+	((t_triade*)last->data)->cell[2] = true;
+	((t_triade*)last->data)->id = 'D';
+	last = append_reel(last);
+	((t_triade*)last->data)->cell[0] = false;
+	((t_triade*)last->data)->cell[1] = false;
+	((t_triade*)last->data)->cell[2] = true;
+	((t_triade*)last->data)->id = 'E';
+	last = append_reel(last);
+	((t_triade*)last->data)->cell[0] = false;
+	((t_triade*)last->data)->cell[1] = true;
+	((t_triade*)last->data)->cell[2] = false;
+	((t_triade*)last->data)->id = 'F';
+	last->next = head;
+	head->prev = last;
 	return head;
 }
 
@@ -137,10 +130,18 @@ t_node	*counter_next(t_node *counter) {
 				retenue = false;
 			} else if (retenue && counter->next)
 			counter = counter->next;
+		} else {
+				counter = malloc(sizeof(t_node));
+				if (!counter)
+					exit(MALLOC_ERR_NO);
+				counter->next = NULL;
+				((t_node *)(counter->data))->data = (t_node *)reel;
 		}
 	} while (retenue) ;
 }
 
 int main () {
 	reel = set_list();
+	t_node *counter = NULL;
+	counter = counter_next(counter);
 }
