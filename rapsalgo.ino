@@ -116,21 +116,36 @@ void setup() {
     triade_ls = set_list();
 }
 
+bool    generator() {
+    // put your main code here, to run repeatedly:
+    static t_reel *counter;
+    static int    i;
+    bool          output;
+  if (!counter)
+    counter = set_reel();
+    if (!is_counter_available(counter)) {
+    while (!is_counter_available(counter))
+      counter = counter_next(counter);
+  }
+  if (counter->triade->cell[i])
+    output = true;
+  else
+    output = false;
+    if (++i == 3) {
+        i = 0;
+        counter = counter_next(counter);
+    }
+  return output;
+}
+
 void loop() {
     // put your main code here, to run repeatedly:
     t_reel *counter = NULL;
-    for (int i = 0; i < 1000; i++) {
-        if (is_counter_available(counter)) {
-            for (int j = 0; j < 3; j++) {
-                if (counter->triade->cell[j])
-                    tone(8, melody[0], noteDuration);
-                else
-                    tone(8, melody[1], noteDuration);
-                delay(noteDuration);
-                noTone(8);
-                delay(noteDuration);
-            }
-        }
-        counter = counter_next(counter);
+    for (int j = 0; j < 3; j++) {
+        if (generator())
+            tone(8, melody[0], noteDuration);
+        else
+            tone(8, melody[1], noteDuration);
+        delay(500);
     }
 }
