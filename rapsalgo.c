@@ -122,6 +122,25 @@ t_reel	*counter_next(t_reel *counter) {
 	return initial_counter;
 };
 
+bool	is_counter_available(t_reel *counter) {
+	if (counter) while (counter->next) {
+		if (counter->triade->id == 'A' && counter->next->triade->id > 'C')
+			return false;                                 
+		if (counter->triade->id == 'D' && counter->next->triade->id < 'D')
+			return false;                                 
+		if (counter->triade->id == 'B' && counter->next->triade->id == 'E')
+			return false;                                 
+		if (counter->triade->id == 'E' && counter->next->triade->id == 'B')
+			return false;                                 
+		if (counter->triade->id == 'C' && counter->next->triade->id == 'B')
+			return false;                                 
+		if (counter->triade->id == 'F' && counter->next->triade->id == 'E')
+			return false;
+		counter = counter->next;
+	}
+	return true;
+}
+
 void	print_counter(t_reel *counter) {
 	if (counter) {
 		while (counter) {
@@ -136,7 +155,8 @@ int main () {
 	triade_ls = set_list();
 	t_reel *counter = NULL;
 	for (int i = 0; i<1000; i++) {
-		print_counter(counter);
+		if (is_counter_available(counter))
+			print_counter(counter);
 		counter = counter_next(counter);
 	}
 }
