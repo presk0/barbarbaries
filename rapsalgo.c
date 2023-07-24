@@ -141,6 +141,7 @@ bool	is_counter_available(t_reel *counter) {
 	return true;
 }
 
+generate_bool
 void	print_counter(t_reel *counter) {
 	if (counter) {
 		while (counter) {
