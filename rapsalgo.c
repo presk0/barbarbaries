@@ -84,64 +84,37 @@ t_reel *counter_next(t_reel *counter) {
     return initial_counter;
 }
 
-bool is_counter_available(t_reel *counter) {
-    if (counter) {
-        while (counter->next) {
-            if (counter->triade->id == 'A' && counter->next->triade->id > 'C')
-                return false;
-            if (counter->triade->id == 'D' && counter->next->triade->id < 'D')
-                return false;
-            if (counter->triade->id == 'B' && counter->next->triade->id == 'E')
-                return false;
-            if (counter->triade->id == 'E' && counter->next->triade->id == 'B')
-                return false;
-            if (counter->triade->id == 'C' && counter->next->triade->id == 'B')
-                return false;
-            if (counter->triade->id == 'F' && counter->next->triade->id == 'E')
-                return false;
-            counter = counter->next;
-        }
-    }
-    return true;
-}
-
-
-// note durations: 4 = quarter note, 8 = eighth note, etc.:
-
-t_triade    *triade_ls;
-
 bool    generator() {
     // put your main code here, to run repeatedly:
     static t_reel *counter;
     static int    i;
+    static bool    last;
+    static bool    ante;
     bool          output;
 	if (!counter)
 		counter = set_reel();
-    if (!is_counter_available(counter)) {
-		while (!is_counter_available(counter))
+	do {
+		output = counter->triade->cell[i];
+		if (++i == 3) {
+			i = 0;
 			counter = counter_next(counter);
-	}
-	if (counter->triade->cell[i])
-		output = true;
-	else
-		output = false;
-    if (++i == 3) {
-        i = 0;
-        counter = counter_next(counter);
-    }
+		}
+	} while (output == last && output == ante);
+	ante = last;
+	last = output;
 	return output;
 }
 
 int main() {
     // put your main code here, to run repeatedly:
+	bool last = true, ante = false, current;
 	triade_ls = set_list();
-	for (int i =0; i< 100; i++) {
-		t_reel *counter = NULL;
-		for (int j = 0; j < 3; j++) {
-			if (generator())
-				printf("A ");
-			else
-				printf("B ");
-		}
+	t_reel *counter = NULL;
+	for (int i =0; i< 1000; i++) {
+		if ((current = generator()) == ante && ante == last)
+			printf("bug");
+		current ? printf("A ") : printf("B ");
+		ante = last;
+		last = current;
 	}
 }

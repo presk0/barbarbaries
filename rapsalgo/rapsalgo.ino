@@ -109,7 +109,7 @@ int melody[] = {
 };
 
 // note durations: 4 = quarter note, 8 = eighth note, etc.:
-int noteDuration = 100;
+int noteDuration = 500;
 
 void setup() {
     // put your setup code here, to run once:
@@ -142,10 +142,11 @@ void loop() {
     // put your main code here, to run repeatedly:
     t_reel *counter = NULL;
     for (int j = 0; j < 3; j++) {
+        generator() ? noteDuration /= 2 : noteDuration = noteDuration;
         if (generator())
             tone(8, melody[0], noteDuration);
         else
             tone(8, melody[1], noteDuration);
-        delay(500);
+           delay(noteDuration*2);
     }
 }
