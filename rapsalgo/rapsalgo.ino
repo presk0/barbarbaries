@@ -82,71 +82,62 @@ t_reel *counter_next(t_reel *counter) {
     return initial_counter;
 }
 
-bool is_counter_available(t_reel *counter) {
-    if (counter) {
-        while (counter->next) {
-            if (counter->triade->id == 'A' && counter->next->triade->id > 'C')
-                return false;
-            if (counter->triade->id == 'D' && counter->next->triade->id < 'D')
-                return false;
-            if (counter->triade->id == 'B' && counter->next->triade->id == 'E')
-                return false;
-            if (counter->triade->id == 'E' && counter->next->triade->id == 'B')
-                return false;
-            if (counter->triade->id == 'C' && counter->next->triade->id == 'B')
-                return false;
-            if (counter->triade->id == 'F' && counter->next->triade->id == 'E')
-                return false;
-            counter = counter->next;
-        }
+bool    generator() {
+    // put your main code here, to run repeatedly:
+    static t_reel *counter;
+    static int    i;
+    static bool    last;
+    static bool    ante;
+    bool          output;
+  if (!counter)
+    counter = set_reel();
+  do {
+    output = counter->triade->cell[i];
+    if (++i == 3) {
+      i = 0;
+      counter = counter_next(counter);
     }
-    return true;
+  } while (output == last && output == ante);
+  ante = last;
+  last = output;
+  return output;
 }
+
 
 // notes in the melody:
 int melody[] = {
-    NOTE_C4, NOTE_G3,
+    NOTE_C4, NOTE_G3, 
 };
 
 // note durations: 4 = quarter note, 8 = eighth note, etc.:
-int noteDuration = 500;
+int duration_unit = 500;
 
 void setup() {
     // put your setup code here, to run once:
     triade_ls = set_list();
 }
 
-bool    generator() {
-    // put your main code here, to run repeatedly:
-    static t_reel *counter;
-    static int    i;
-    bool          output;
-  if (!counter)
-    counter = set_reel();
-    if (!is_counter_available(counter)) {
-    while (!is_counter_available(counter))
-      counter = counter_next(counter);
-  }
-  if (counter->triade->cell[i])
-    output = true;
-  else
-    output = false;
-    if (++i == 3) {
-        i = 0;
-        counter = counter_next(counter);
-    }
-  return output;
-}
-
+int64_t nb_max = 100;
 void loop() {
     // put your main code here, to run repeatedly:
     t_reel *counter = NULL;
-    for (int j = 0; j < 3; j++) {
-        generator() ? noteDuration /= 2 : noteDuration = noteDuration;
-        if (generator())
+    int64_t i;
+    bool   suite[nb_max];
+    int  noteDuration;
+    for (i = 0; i < nb_max; i++) {
+      suite[i] = generator();
+    }
+    i = 0;
+    for (int64_t j = 0; j < nb_max; j++) {
+        //suite[j] ? noteDuration = duration_unit : noteDuration = duration_unit * 2;
+        suite[i+1] ? noteDuration = duration_unit : noteDuration = (float)duration_unit * 1.5;
+        if (suite[j])
             tone(8, melody[0], noteDuration);
         else
             tone(8, melody[1], noteDuration);
-           delay(noteDuration*2);
+        delay(noteDuration);
+        noTone(8);
+        i++;
     }
 }
+

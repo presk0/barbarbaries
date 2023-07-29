@@ -1,0 +1,5 @@
+{
+    "board": "arduino:avr:uno",
+    "sketch": "rapsalgo/rapsalgo.ino",
+    "port": "/dev/ttyACM0"
+}
