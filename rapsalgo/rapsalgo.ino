@@ -106,7 +106,7 @@ bool    generator() {
 
 // notes in the melody:
 int melody[] = {
-    NOTE_C4, NOTE_G3, 
+    NOTE_C4, NOTE_G3, NOTE_B3, 
 };
 
 // note durations: 4 = quarter note, 8 = eighth note, etc.:
@@ -115,6 +115,27 @@ int duration_unit = 500;
 void setup() {
     // put your setup code here, to run once:
     triade_ls = set_list();
+}
+
+void play(int pin, int note, int duration){
+    tone(pin, note, duration);
+    delay(duration);
+    noTone(pin);
+}
+
+void    tension(int duration) {
+    tone(10, NOTE_B3, duration);
+    tone(8, NOTE_F4, duration);
+    delay(duration);
+    noTone(8);
+    noTone(10);
+}
+void    resolution(int duration) {
+    tone(10, NOTE_C4, duration);
+    tone(8, NOTE_E4, duration);
+    delay(duration);
+    noTone(8);
+    noTone(10);
 }
 
 int64_t nb_max = 100;
@@ -132,11 +153,9 @@ void loop() {
         //suite[j] ? noteDuration = duration_unit : noteDuration = duration_unit * 2;
         suite[i+1] ? noteDuration = duration_unit : noteDuration = (float)duration_unit * 1.5;
         if (suite[j])
-            tone(8, melody[0], noteDuration);
+            tension(noteDuration);
         else
-            tone(8, melody[1], noteDuration);
-        delay(noteDuration);
-        noTone(8);
+            resolution(noteDuration);
         i++;
     }
 }

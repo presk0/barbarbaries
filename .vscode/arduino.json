@@ -1,5 +1,5 @@
 {
-    "board": "arduino:avr:uno",
+    "board": "arduino:renesas_uno:minima",
     "sketch": "rapsalgo/rapsalgo.ino",
     "port": "/dev/ttyACM0"
 }
